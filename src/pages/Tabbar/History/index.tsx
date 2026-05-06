@@ -69,6 +69,7 @@ const History: React.FC = () => {
   };
   const stautsMap = {
     0: "待开奖",
+    9: "待开奖",
     1: "赢",
     2: "输",
     3: "和",
@@ -113,7 +114,7 @@ const History: React.FC = () => {
   };
   const dropDownClose = (item) => {
     setTypeIndex(item.value);
-    setActive(0)
+    setActive(0);
     dropdownRef.current?.close();
   };
   const tabChange = (tabIndex) => {
@@ -197,7 +198,7 @@ const History: React.FC = () => {
   useEffect(() => {
     initData();
   }, [typeIndex, active]);
- 
+
   return (
     <div className="HistoryPage">
       <div className="headerTopBox">
@@ -285,10 +286,28 @@ const History: React.FC = () => {
                   </div>
                   <div className="rightTime">{item.createTime}</div>
                 </div>
+                {item.predictionContestType == 3 && (
+                  <div className="hintItemOption">
+                    <div className="txt">
+                      参与金额:{fromWei(item.amount, getDecimals())} ALGO
+                    </div>
+                  </div>
+                )}
+                {item.predictionContestType == 3 && (
+                  <div className="hintItemOption">
+                    <div className="txt">
+                      押金金额:
+                      {fromWei(item.payAmount, getDecimals()) -
+                        fromWei(item.amount, getDecimals())}{" "}
+                      ALGO
+                    </div>
+                  </div>
+                )}
                 <div className="hintItemOption">
                   <div className="txt">
-                    参与金额:{fromWei(item.amount, getDecimals())} ALGO
+                    支付金额:{fromWei(item.payAmount, getDecimals())} ALGO
                   </div>
+
                   {item.predictionContestType == 1 && (
                     <div className="txt">下注:{betTypeMap[item.betType]}</div>
                   )}

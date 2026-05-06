@@ -153,7 +153,7 @@ const Cow: FC = () => {
             </div>
             <div className="optionTxt">
               <div className="leftTxt">投注金额</div>
-              <div className="rightTxt">{computedAmount()} ALGO</div>
+              <div className="rightTxt">{selected} ALGO</div>
             </div>
              <div className="optionTxt">
               <div className="leftTxt">押金</div>

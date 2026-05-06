@@ -22,6 +22,7 @@ import naoling from "@/assets/donate/naoling.png";
 import walletWhilte from "@/assets/donate/walletWhitle.png";
 import whileCopy from "@/assets/donate/whileCopy.png";
 import blackCopy from "@/assets/donate/blackCopy.png";
+import whiteDonate from "@/assets/tabbar/whiteDonate.png";
 import refresh from "@/assets/donate/refresh.png";
 import anquan from "@/assets/donate/anquan.png";
 import home from "@/assets/donate/home.png";
@@ -75,10 +76,9 @@ const Home: FC = () => {
       params: [address],
     });
     console.log("result--", result);
-    if (result.value) {
-      setAlgoBalance(result.value);
-      getUsdtAmount(result.value);
-    }
+
+    setAlgoBalance(result.value);
+    getUsdtAmount(result.value);
   };
   const getUsdtAmount = async (aiGoAmount) => {
     console.log("aiGoAmount--", aiGoAmount);
@@ -103,6 +103,8 @@ const Home: FC = () => {
       cancelText: "取消",
       onOk() {
         setWalletAddress("");
+        storage.set("sign", null);
+        storage.set("address", null);
         navigate("/Wallet");
       },
       onCancel() {
@@ -111,9 +113,14 @@ const Home: FC = () => {
     });
   };
   useEffect(() => {
+    console.log("1----", address);
     if (address) {
       setWalletAddress(address);
       initData(address);
+    } else {
+      setWalletAddress("");
+      storage.set("sign", null);
+      storage.set("address", null);
     }
   }, []);
   return (
@@ -204,11 +211,11 @@ const Home: FC = () => {
           </div>
           <div className="txtBox">下注已开启</div>
         </div>
-        <div className="rightOption">系统正常运行 · 当前轮次 #2847</div>
+        <div className="rightOption">系统正常运行</div>
       </div>
       <div className="btnBox">
         <span className="spnTxt">开始下注</span>
-        <div className="rightIcon"></div>
+        <img src={whiteDonate} className="rightIcon"></img>
       </div>
       {isShowHint && (
         <div className="hintEndBox">

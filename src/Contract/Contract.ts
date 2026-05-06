@@ -4,6 +4,7 @@ import Erc20ABI from "./ABI/Erc20.ts";
 import MultiCallABI from "./ABI/MultiCallABI.ts";
 import SwapRouterABI from "./ABI/SwapRouterABI.ts";
 import AigoPRedictionABI from "./ABI/AigoPRedictionABI.ts";
+import { Router } from "react-router-dom";
 
 interface ContractItem {
   address: string;

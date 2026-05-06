@@ -1,5 +1,6 @@
 .HistoryPage {
     padding-bottom: 60px;
+
     .headerTopBox {
         padding: 12px 24px;
         border-bottom: 1px solid #f3f3f3;
@@ -8,6 +9,7 @@
         top: 0;
         right: 0;
         background: #fff;
+        z-index: 999;
     }
 
     .historyTop {
@@ -112,6 +114,7 @@
     .listBox {
         padding-top: 180px;
         margin-inline: 24px;
+
         .itemBox {
             margin-bottom: 12px;
             background: #fff;
@@ -199,10 +202,12 @@
                         color: #000;
                         font-weight: bold;
                     }
-                    .typeOption3{
+
+                    .typeOption3 {
                         display: flex;
                         align-items: center;
                     }
+
                     .claimAmount {
                         font-size: 12px !important;
                         padding: 0px 14px !important;
@@ -256,10 +261,12 @@
                     display: flex;
                     // align-items: center;
                     margin-top: 4px;
-                    .spnOption{
+
+                    .spnOption {
                         display: flex;
                         align-items: center;
                     }
+
                     .labelTxt {
                         margin-right: 8px;
                         color: #737373;

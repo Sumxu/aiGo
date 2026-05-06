@@ -12,6 +12,7 @@ import studio from "@/assets/donate/studio.png";
 import ContractRequest from "@/Hooks/ContractRequest.ts";
 import { formatAddress, fromWei, getDecimals } from "@/Hooks/Utils";
 import { storage } from "@/Hooks/useLocalStorage";
+import whiteDonate from '@/assets/tabbar/whiteDonate.png'
 const PlaceBet: FC = () => {
   const navigate = useNavigate();
   const walletAddress = storage.get("address");
@@ -38,7 +39,7 @@ const PlaceBet: FC = () => {
         <div className="headerTopBox">
           <div className="leftOption">
             <div className="logoBox">
-              <img src={walletWhilte} className="icon"></img>
+              <img src={whiteDonate} className="icon"></img>
             </div>
             <div className="hintTxt">
               <div className="txtTop">下注</div>

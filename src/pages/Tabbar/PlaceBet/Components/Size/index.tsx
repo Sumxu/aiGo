@@ -1,6 +1,6 @@
 import "./index.scss";
 import type { FC } from "react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import studio from "@/assets/donate/studio.png";
 import blackRight from "@/assets/donate/blackRight.png";
@@ -15,6 +15,7 @@ import ContractList from "@/Contract/Contract";
 import { storage } from "@/Hooks/useLocalStorage";
 import { fromWei, getDecimals, toWei, Totast } from "@/Hooks/Utils";
 const Size: FC = () => {
+  const [algoBalance, setAlgoBalance] = useState<bigint>(0n);
   const walletAddress = storage.get("address");
   const amounts = [10, 100, 500, 1000, 5000, 100000];
   const [btnLoading, setBtnLoading] = useState<boolean>(false);
@@ -27,6 +28,11 @@ const Size: FC = () => {
     setBtnLoading(true);
     try {
       let amount = toWei(selected.toString(), getDecimals());
+      if (algoBalance < amount) {
+        Totast('余额不足','error')
+        setBtnLoading(false);
+        return;
+      }
       console.log("amount--", amount);
       let isApply = false;
       let applyAmount = 0n;
@@ -83,6 +89,20 @@ const Size: FC = () => {
       setBtnLoading(false);
     }
   };
+  const initData = async (address) => {
+    const result = await ContractRequest({
+      tokenName: "AIgoToken",
+      methodsName: "balanceOf",
+      params: [address],
+    });
+    console.log("result--", result);
+    if (result.value) {
+      setAlgoBalance(result.value);
+    }
+  };
+  useEffect(() => {
+    initData(walletAddress);
+  }, []);
   return (
     <div className="SizePage">
       <div className="hintBox">

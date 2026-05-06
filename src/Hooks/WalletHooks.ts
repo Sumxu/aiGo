@@ -10,22 +10,36 @@ declare global {
 }
 // ✅ 保证全局只注册一次监听
 let isListenerAdded = false;
-export function listenWalletEvents(navigate) {
+export function listenWalletEvents(navigate: (path: string) => void) {
   if (!window.ethereum || isListenerAdded) return;
-  isListenerAdded = true;
-  window.ethereum.on("accountsChanged", (accounts: string[]) => {
-    clearStorageFn();
-    //清空缓存
-    if (accounts.length === 0) {
-      navigate("/Wallet");
-    } else {
-      navigate("/Wallet");
-    }
-  });
 
-  window.ethereum.on("chainChanged", () => {
+  console.log("✅ 注册钱包事件监听");
+  isListenerAdded = true;
+
+  const handleAccountsChanged = (accounts: string[]) => {
+    console.log("accountsChanged:", accounts);
+    clearStorageFn();
+    window.location.reload()
+    navigate("/Wallet"); // 无论是否断开都跳回 Wallet 页处理
+  };
+
+  const handleChainChanged = (chainId: string) => {
+    console.log("chainChanged:", chainId);
+    // 可选：window.location.reload(); 但推荐 navigate
     navigate("/Wallet");
-  });
+  };
+
+  window.ethereum.on("accountsChanged", handleAccountsChanged);
+  window.ethereum.on("chainChanged", handleChainChanged);
+
+  // 返回清理函数（重要！）
+  return () => {
+    if (window.ethereum) {
+      window.ethereum.removeListener("accountsChanged", handleAccountsChanged);
+      window.ethereum.removeListener("chainChanged", handleChainChanged);
+    }
+    isListenerAdded = false;
+  };
 }
 //清空所有的缓存只要切换了账号
 const clearStorageFn = () => {
