@@ -1,6 +1,6 @@
 import "./index.scss";
 import type { FC } from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "antd";
 import { useNavigate } from "react-router-dom";
 import ContractList from "@/Contract/Contract";
@@ -13,9 +13,10 @@ import ContractRequest from "@/Hooks/ContractRequest.ts";
 import { storage } from "@/Hooks/useLocalStorage";
 import { fromWei, getDecimals, toWei, Totast } from "@/Hooks/Utils";
 const SingleOrDouble: FC = () => {
-    const walletAddress = storage.get("address");
+  const walletAddress = storage.get("address");
+  const [algoBalance, setAlgoBalance] = useState<bigint>(0n);
   const [btnLoading, setBtnLoading] = useState<boolean>(false);
-  const amounts = [10, 100, 500, 1000, 5000, 100000];
+  const amounts = [10, 100, 1000, 5000, 100000];
   const [selected, setSelected] = useState<number>(10);
   const computedAmount = () => {
     return selected * 1.95;
@@ -24,6 +25,11 @@ const SingleOrDouble: FC = () => {
     setBtnLoading(true);
     try {
       let amount = toWei(selected.toString(), getDecimals());
+      if (algoBalance < amount) {
+        Totast("余额不足", "error");
+        setBtnLoading(false);
+        return;
+      }
       console.log("amount--", amount);
       let isApply = false;
       let applyAmount = 0n;
@@ -32,7 +38,6 @@ const SingleOrDouble: FC = () => {
         methodsName: "allowance",
         params: [walletAddress, ContractList["AigoPrediction"].address],
       }).then((res) => {
-        console.log("res.value--", res);
         if (res.value) {
           applyAmount = res.value;
         }
@@ -47,7 +52,7 @@ const SingleOrDouble: FC = () => {
             methodsName: "approve",
             params: [
               ContractList["AigoPrediction"].address,
-              amount, //授权最大值
+              amount, 
             ],
           }).then((res) => {
             if (res.value) {
@@ -70,16 +75,30 @@ const SingleOrDouble: FC = () => {
       const result = await ContractSend({
         tokenName: "AigoPrediction",
         methodsName: "mantissaMint",
-        params: [walletAddress, amount,0],
+        params: [walletAddress, amount, 0],
       });
       if (result.value) {
-        Totast("购买成功", "success"); // 检查授权或者授权时发生了错误，请检查网络后重新尝试
+        Totast("投注成功", "success"); // 检查授权或者授权时发生了错误，请检查网络后重新尝试
       }
     } catch (error) {
     } finally {
       setBtnLoading(false);
     }
   };
+  const initData = async (address) => {
+    const result = await ContractRequest({
+      tokenName: "AIgoToken",
+      methodsName: "balanceOf",
+      params: [address],
+    });
+    console.log("result--", result);
+    if (result.value) {
+      setAlgoBalance(result.value);
+    }
+  };
+  useEffect(() => {
+    initData(walletAddress);
+  }, []);
   return (
     <div className="SingleOrDoublePage">
       <div className="hintBox">
@@ -126,7 +145,7 @@ const SingleOrDouble: FC = () => {
           </div>
           <div className="rightOption">
             <div className="expectNum">1.95X</div>
-            <div className="computedAmount">{computedAmount()} ALGO</div>
+            <div className="computedAmount">{computedAmount()} AIGO</div>
           </div>
         </div>
         <div className="totalBox">
@@ -137,14 +156,14 @@ const SingleOrDouble: FC = () => {
             </div>
             <div className="optionTxt">
               <div className="leftTxt">投注金额</div>
-              <div className="rightTxt">{computedAmount()} ALGO</div>
+              <div className="rightTxt">{selected} AIGO</div>
             </div>
           </div>
           <div className="totalHintTxt">
             <div className="leftTxt">合计支付</div>
-            <div className="leftTxt">{computedAmount()} ALGO</div>
+            <div className="leftTxt">{selected} AIGO</div>
           </div>
-           <Button
+          <Button
             className="btn"
             loading={btnLoading}
             onClick={() => submitClick()}

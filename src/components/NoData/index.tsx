@@ -5,7 +5,7 @@ import { Empty } from "antd-mobile";
 const NoData: React.FC = () => {
   return (
     <div className="no-data">
-      <Empty description={t("暂无数据")} />
+      <Empty description={'暂无数据'} />
     </div>
   );
 };

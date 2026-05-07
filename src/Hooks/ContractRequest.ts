@@ -25,10 +25,6 @@ async function useContractRequest({
     // v6 写法
     const provider = new ethers.BrowserProvider(window.ethereum);
     const contractInfo: ContractObje = ContractList[tokenName];
-    console.log("tokenName=-=-", tokenName);
-    console.log("contractInfo=-=-", contractInfo);
-    console.log("methodsName=-=-", methodsName);
-    console.log("params=-=-", params);
     // 这里只读调用，用 provider 就够
     const contract = new ethers.Contract(
       contractInfo.address,

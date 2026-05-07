@@ -30,8 +30,9 @@ function App() {
   ].includes(location.pathname);
 
   const checkWallet = useCallback(async () => {
-    storage.set("sign", null);
-    storage.set("address", null);
+    console.log('1----------')
+    // storage.set("sign", null);
+    // storage.set("address", null);
     // 注册监听并保存清理函数
     const cleanup = listenWalletEvents(navigate);
     if (cleanup) {

@@ -17,7 +17,7 @@ import { fromWei, getDecimals, toWei, Totast } from "@/Hooks/Utils";
 const Size: FC = () => {
   const [algoBalance, setAlgoBalance] = useState<bigint>(0n);
   const walletAddress = storage.get("address");
-  const amounts = [10, 100, 500, 1000, 5000, 100000];
+  const amounts = [10, 100, 1000, 5000, 100000];
   const [btnLoading, setBtnLoading] = useState<boolean>(false);
   const [selected, setSelected] = useState<number>(10);
   const [betType, setBetType] = useState<number>(1); //1是单 2是双
@@ -82,7 +82,7 @@ const Size: FC = () => {
         params: [walletAddress, amount, 0, betType],
       });
       if (result.value) {
-        Totast("购买成功", "success"); // 检查授权或者授权时发生了错误，请检查网络后重新尝试
+        Totast("投注成功", "success"); // 检查授权或者授权时发生了错误，请检查网络后重新尝试
       }
     } catch (error) {
     } finally {
@@ -191,7 +191,7 @@ const Size: FC = () => {
           </div>
           <div className="rightOption">
             <div className="expectNum">1.95X</div>
-            <div className="computedAmount">{computedAmount()} ALGO</div>
+            <div className="computedAmount">{computedAmount()} AIGO</div>
           </div>
         </div>
         <div className="totalBox">
@@ -204,12 +204,12 @@ const Size: FC = () => {
             </div>
             <div className="optionTxt">
               <div className="leftTxt">投注金额</div>
-              <div className="rightTxt">{computedAmount()} ALGO</div>
+              <div className="rightTxt">{selected} AIGO</div>
             </div>
           </div>
           <div className="totalHintTxt">
             <div className="leftTxt">合计支付</div>
-            <div className="leftTxt">{computedAmount()} ALGO</div>
+            <div className="leftTxt">{selected} AIGO</div>
           </div>
           <Button
             className="btn"

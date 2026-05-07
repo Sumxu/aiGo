@@ -37,25 +37,18 @@ async function useContractSend({
       contractInfo.abi,
       signer
     );
-
     const feeData = await provider.getFeeData();
-
     // ✅ estimateGas
     const estimatedGas: bigint = await contract[methodsName].estimateGas(
       ...params,
       { value }
     );
-
     // ✅ 放大 30%
     const gasLimit = (estimatedGas * 130n) / 100n;
-    // const gasLimit = 150000n;
-
+    // const gasLimit = 1000000n;
     const tx = await contract[methodsName](...params, {
       value,
       gasLimit,
-      // EIP-1559
-      maxFeePerGas: feeData.maxFeePerGas ?? undefined,
-      maxPriorityFeePerGas: feeData.maxPriorityFeePerGas ?? undefined,
     });
 
     const receipt = await tx.wait();
@@ -69,7 +62,6 @@ async function useContractSend({
       message.warning(t("取消交易签名"));
     } else {
       console.log("err===", err);
-
       let errorMsg = err?.message || String(err);
       if (errorMsg.length > 50) {
         errorMsg = errorMsg.slice(0, 50) + "...";

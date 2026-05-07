@@ -4,20 +4,26 @@ import { useNavigate } from "react-router-dom";
 import anquan from "@/assets/donate/anquan.png";
 import NetworkRequest from "@/Hooks/NetworkRequest.ts";
 import { storage } from "@/Hooks/useLocalStorage";
+import { ethers, parseEther, formatEther } from "ethers";
 import {
   getDecimals,
   fromWei,
   getLastChars,
   copyText,
   getRange,
+  Totast,
+  toWei,
 } from "@/Hooks/Utils";
 import { Button, Spin } from "antd";
+import refreshBlack from "@/assets/donate/refreshBlack.png";
 import ContractSend from "@/Hooks/ContractSend";
-import { Dropdown, Radio, Space, InfiniteScroll } from "antd-mobile";
+import ContractRequest from "@/Hooks/ContractRequest";
+import { Dropdown, Radio, Space, InfiniteScroll, Toast } from "antd-mobile";
 import NoData from "@/components/NoData";
 interface listItem {
   address: string;
   amount: string;
+  isReaward: boolean;
   betType: number;
   blockHash: string;
   blockNumber: number;
@@ -33,6 +39,7 @@ interface listItem {
 }
 const History: React.FC = () => {
   const walletAddress = storage.get("address");
+
   const navigate = useNavigate();
   const [isMore, setIsMore] = useState<boolean>(false);
   const [listLoading, setListLoading] = useState<boolean>(false);
@@ -43,6 +50,7 @@ const History: React.FC = () => {
   const [itemIndex, setItemIndex] = useState<number>(-999);
   const dropdownRef = useRef(null);
   const [current, setCurrent] = useState<number>(1);
+  const [refreshLoading, setRefreshLoading] = useState<boolean>(false);
   const typeList = [
     {
       label: "单双",
@@ -97,16 +105,16 @@ const History: React.FC = () => {
   };
   const bullfighting = (item) => {
     const payAmount = fromWei(item.payAmount, getDecimals());
-    const submitAmount = Number(payAmount) / 10;
-    console.log("submitAmount==", submitAmount);
+    const activeAmount = fromWei(item.amount, getDecimals());
     //赢 就是本金
     let amount = 0;
     if (item.status == 1) {
-      amount = (submitAmount + submitAmount * item.multiple) * 0.95;
+      amount = Number(payAmount) + Number(activeAmount) * item.multiple * 0.95;
     } else if (item.status == 2) {
       //输 本金
       amount =
-        Number(payAmount) - (submitAmount + submitAmount * item.multiple);
+        Number(payAmount) -
+        (Number(activeAmount) + Number(activeAmount) * item.multiple);
     } else {
       amount = payAmount;
     }
@@ -120,53 +128,91 @@ const History: React.FC = () => {
   const tabChange = (tabIndex) => {
     setActive(tabIndex);
   };
-  const initData = async () => {
+  const initData = async (isSetTimeout = false) => {
     try {
       setList([]);
+      setCurrent(1);
       setListLoading(true);
+      setRefreshLoading(true);
+      if (isSetTimeout) {
+        setTimeout(() => {}, 6000);
+      }
       const result = await NetworkRequest({
         Url: "predictionContest/myPredictionContest",
         Method: "post",
         Data: {
           current: 1,
           size: 10,
-          status: active,
-          predictionContestType: typeIndex,
+          status: "",
+          predictionContestType: "",
         },
       });
       if (result.success) {
         if (result.data.data.records.length === 10) {
-          setIsMore(true);
+          // setIsMore(true);
         } else {
           setIsMore(false);
         }
+        let recordsList = result.data.data.records;
+        console.log("recordsList--", recordsList);
+
+        recordsList.map((item, index) => {
+          if (item.claimAmount) {
+            item.isReaward = true;
+          } else {
+            const listIndex = storage.get("listIndex");
+            if (listIndex.length > 0) {
+              item.isReaward = listIndex.includes(item.id); //判断缓存是否有那个id
+              //算出对应的价格
+              if (item.predictionContestType == 3) {
+                item.claimAmount = toWei(
+                  bullfighting(item).toString(),
+                  getDecimals(),
+                );
+              } else {
+                const amount = parseEther(fromWei(item.amount, getDecimals()));
+                const multiplied = (amount * BigInt(195)) / BigInt(100);
+                item.claimAmount = multiplied;
+              }
+              console.log("claimAmount==", item.claimAmount);
+            }
+          }
+        });
         setTotal(result.data.data.total);
-        setList(result.data.data.records);
+        console.log("res.data.data.records-2", recordsList);
+        setList(recordsList);
       }
     } catch (error) {
     } finally {
       setListLoading(false);
+      setRefreshLoading(false);
     }
   };
   const claimAmountChange = async (item, index) => {
     if (itemIndex == index) return;
     setItemIndex(index);
     try {
-      await ContractSend({
+      const result = await ContractSend({
         tokenName: "AigoPrediction",
         methodsName: "reaward",
         params: [item.id],
       });
-      //延迟3秒钟去请求列表
-      setTimeout(() => {
-        initData();
-      }, 3000);
+      if (result.value) {
+        getListIndex(item.id);
+        Totast("领取成功", "success");
+      }
+      initData(true);
     } catch (error) {
     } finally {
       setItemIndex(-999);
     }
   };
-
+  const getListIndex = (id) => {
+    //得到数组代币
+    let list = storage.get("listIndex");
+    list.push(id);
+    storage.set("listIndex", list);
+  };
   // 获取更多数据信息
   const loadMoreAction = async () => {
     const nexPage = current + 1;
@@ -177,8 +223,8 @@ const History: React.FC = () => {
       Data: {
         current: nexPage,
         size: 10,
-        status: active,
-        predictionContestType: typeIndex,
+        status: "",
+        predictionContestType: "",
       },
     }).then((res) => {
       if (res.success) {
@@ -192,13 +238,13 @@ const History: React.FC = () => {
     });
   };
   const openBsc = (item) => {
-    const url = `https://testnet.bscscan.com/block/${item.blockNumber}`;
+    const url = `https://bscscan.com/block/${item.blockNumber}`;
     copyText(url);
   };
   useEffect(() => {
     initData();
+    storage.set("listIndex", []);
   }, [typeIndex, active]);
-
   return (
     <div className="HistoryPage">
       <div className="headerTopBox">
@@ -207,7 +253,7 @@ const History: React.FC = () => {
           <img src={anquan} className="icon"></img>
           <div className="hintTxt">所有记录均可通过txHash在链上核验</div>
         </div>
-        <div className="tabs">
+        {/* <div className="tabs">
           {tabs
             .filter((item) => typeIndex === 3 || item.value !== 3)
             .map((item, index) => (
@@ -241,7 +287,7 @@ const History: React.FC = () => {
               </div>
             </Dropdown.Item>
           </Dropdown>
-        </div>
+        </div> */}
 
         <div className="totalNumBox">
           <div className="leftTxt">
@@ -249,7 +295,14 @@ const History: React.FC = () => {
           </div>
           <div className="rightTxt">
             <div className="lineBlock"></div>
-            <div className="hinTxt">区块链同步中</div>
+            <div className="hinTxt">
+              {refreshLoading ? "更新中" : "区块链同步中"}
+            </div>
+            <img
+              src={refreshBlack}
+              className="refresh"
+              onClick={() => initData()}
+            ></img>
           </div>
         </div>
       </div>
@@ -289,7 +342,7 @@ const History: React.FC = () => {
                 {item.predictionContestType == 3 && (
                   <div className="hintItemOption">
                     <div className="txt">
-                      参与金额:{fromWei(item.amount, getDecimals())} ALGO
+                      参与金额:{fromWei(item.amount, getDecimals())} AIGO
                     </div>
                   </div>
                 )}
@@ -298,14 +351,14 @@ const History: React.FC = () => {
                     <div className="txt">
                       押金金额:
                       {fromWei(item.payAmount, getDecimals()) -
-                        fromWei(item.amount, getDecimals())}{" "}
-                      ALGO
+                        fromWei(item.amount, getDecimals())}
+                      AIGO
                     </div>
                   </div>
                 )}
                 <div className="hintItemOption">
                   <div className="txt">
-                    支付金额:{fromWei(item.payAmount, getDecimals())} ALGO
+                    支付金额:{fromWei(item.payAmount, getDecimals())} AIGO
                   </div>
 
                   {item.predictionContestType == 1 && (
@@ -326,9 +379,16 @@ const History: React.FC = () => {
                       item.status == 1 && <div className="txt">倍数:1.95</div>
                     )}
                     <div className="rightOption">
-                      {item.claimAmount ? (
+                      {item.isReaward ? (
                         <>
-                          {item.status == 1 && (
+                          {item.status == 1 &&
+                            item.predictionContestType != 3 && (
+                              <div className="txt">
+                                已领取收益:
+                                {fromWei(item.claimAmount, getDecimals())}
+                              </div>
+                            )}
+                          {item.predictionContestType == 3 && (
                             <div className="txt">
                               已领取收益:
                               {fromWei(item.claimAmount, getDecimals())}
@@ -337,44 +397,49 @@ const History: React.FC = () => {
                         </>
                       ) : (
                         <>
-                          {item.predictionContestType == 3 && (
-                            <div className="typeOption3">
-                              <div className="txt">
-                                可领取收益: {bullfighting(item)}
-                              </div>
-                              <Button
-                                className="claimAmount"
-                                loading={itemIndex == index}
-                                onClick={() => claimAmountChange(item, index)}
-                              >
-                                领取
-                              </Button>
-                            </div>
-                          )}
-                          {item.predictionContestType != 3 &&
-                            item.status == 1 && (
-                              <div className="txt">
-                                可领取收益:
-                                {computedAmount(
-                                  fromWei(item.amount, getDecimals()),
-                                )}
+                          {item.predictionContestType == 3 &&
+                            item.status != 0 &&
+                            item.status != 9 && (
+                              <div className="typeOption3">
+                                <div className="txt">
+                                  可领取收益: {bullfighting(item)}
+                                </div>
+                                <Button
+                                  className="claimAmount"
+                                  loading={itemIndex == index}
+                                  onClick={() => claimAmountChange(item, index)}
+                                >
+                                  领取
+                                </Button>
                               </div>
                             )}
-                          {item.status == 1 && (
-                            <Button
-                              className="claimAmount"
-                              loading={itemIndex == index}
-                              onClick={() => claimAmountChange(item, index)}
-                            >
-                              领取
-                            </Button>
-                          )}
+                          {item.predictionContestType != 3 &&
+                            item.status == 1 && (
+                              <div className="flexCenter">
+                                <div className="txt">
+                                  可领取收益:
+                                  {computedAmount(
+                                    fromWei(item.amount, getDecimals()),
+                                  )}
+                                </div>
+                                <Button
+                                  className="claimAmount"
+                                  loading={itemIndex == index}
+                                  onClick={() => claimAmountChange(item, index)}
+                                >
+                                  领取
+                                </Button>
+                              </div>
+                            )}
                         </>
                       )}
                     </div>
                   </div>
-                  {item.claimAmount && (
-                    <div className="claimDate">领取时间:{item.claimTime}</div>
+                  <div className="claimDate">投注时间:{item.createTime}</div>
+                  {item.claimTime && (
+                    <div className="claimDate" style={{ marginTop: "6px" }}>
+                      领取时间:{item.claimTime}
+                    </div>
                   )}
                 </div>
                 <div className="proofBox">

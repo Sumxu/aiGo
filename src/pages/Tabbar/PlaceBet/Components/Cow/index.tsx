@@ -1,6 +1,6 @@
 import "./index.scss";
 import type { FC } from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import studio from "@/assets/donate/studio.png";
 import blackRight from "@/assets/donate/blackRight.png";
@@ -15,20 +15,35 @@ import ContractList from "@/Contract/Contract";
 import { storage } from "@/Hooks/useLocalStorage";
 import { fromWei, getDecimals, toWei, Totast } from "@/Hooks/Utils";
 const Cow: FC = () => {
+  const [algoBalance, setAlgoBalance] = useState<bigint>(0n);
   const walletAddress = storage.get("address");
-  const amounts = [10, 100, 500, 1000, 5000, 100000];
+  const amounts = [10, 100, 1000, 5000, 100000];
   const [btnLoading, setBtnLoading] = useState<boolean>(false);
   const [selected, setSelected] = useState<number>(10);
   const [betType, setBetType] = useState<number>(1); //下注的牛倍数
   const computedAmount = () => {
-    return selected * 10; 
+    return selected * 10;
   };
-  
+  const initData = async (address) => {
+    const result = await ContractRequest({
+      tokenName: "AIgoToken",
+      methodsName: "balanceOf",
+      params: [address],
+    });
+    if (result.value) {
+      setAlgoBalance(result.value);
+    }
+  };
   const submitClick = async () => {
     setBtnLoading(true);
     try {
-    const payAmount=computedAmount()
+      const payAmount = computedAmount();
       let amount = toWei(payAmount.toString(), getDecimals());
+      if (algoBalance < amount) {
+        Totast("余额不足", "error");
+        setBtnLoading(false);
+        return;
+      }
       let isApply = false;
       let applyAmount = 0n;
       await ContractRequest({
@@ -48,10 +63,7 @@ const Cow: FC = () => {
           await ContractSend({
             tokenName: "AIgoToken",
             methodsName: "approve",
-            params: [
-              ContractList["AigoPrediction"].address,
-              amount, 
-            ],
+            params: [ContractList["AigoPrediction"].address, amount],
           }).then((res) => {
             if (res.value) {
               isApply = true;
@@ -73,14 +85,19 @@ const Cow: FC = () => {
       const result = await ContractSend({
         tokenName: "AigoPrediction",
         methodsName: "bullfightingMint",
-        params: [walletAddress, amount, 0],
+        params: [walletAddress, toWei(selected.toString(), getDecimals()), 0],
       });
-        Totast("购买成功", "success"); // 检查授权或者授权时发生了错误，请检查网络后重新尝试
+      if (result.value) {
+        Totast("投注成功", "success"); // 检查授权或者授权时发生了错误，请检查网络后重新尝试
+      }
     } catch (error) {
     } finally {
       setBtnLoading(false);
     }
   };
+  useEffect(() => {
+    initData(walletAddress);
+  }, []);
   return (
     <div className="CowPage">
       <div className="hintBox">
@@ -142,7 +159,7 @@ const Cow: FC = () => {
           </div>
           <div className="rightOption">
             <div className="expectNum">{computedAmount()}X</div>
-            <div className="computedAmount">{computedAmount()} ALGO</div>
+            <div className="computedAmount">{computedAmount()} AIGO</div>
           </div>
         </div>
         <div className="totalBox">
@@ -153,16 +170,16 @@ const Cow: FC = () => {
             </div>
             <div className="optionTxt">
               <div className="leftTxt">投注金额</div>
-              <div className="rightTxt">{selected} ALGO</div>
+              <div className="rightTxt">{selected} AIGO</div>
             </div>
-             <div className="optionTxt">
+            <div className="optionTxt">
               <div className="leftTxt">押金</div>
-              <div className="rightTxt">{computedAmount()-selected} ALGO</div>
+              <div className="rightTxt">{computedAmount() - selected} AIGO</div>
             </div>
           </div>
           <div className="totalHintTxt">
             <div className="leftTxt">合计支付</div>
-            <div className="leftTxt">{computedAmount()} ALGO</div>
+            <div className="leftTxt">{computedAmount()} AIGO</div>
           </div>
           <Button
             className="btn"

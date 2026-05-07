@@ -59,7 +59,7 @@ const PlaceBet: FC = () => {
             <div className="walletTxt">钱包余额</div>
             <div className="blanceOfOption">
               <span className="spn">{fromWei(algoBalance, getDecimals())}</span>
-              <span className="tokenName">ALGO</span>
+              <span className="tokenName">AIGO</span>
             </div>
           </div>
           <div className="rightWalletAddress">

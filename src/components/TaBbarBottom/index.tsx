@@ -23,7 +23,7 @@ const TaBbarBottom: FC = () => {
     if (storage.get("sign")) {
       navigate(value);
     } else {
-      Totast(t("请先链接钱包"), "info");
+      Totast("请先链接钱包", "info");
     }
   };
   const tabs = [

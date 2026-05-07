@@ -15,6 +15,7 @@ import {
   copyText,
   fromWei,
   getDecimals,
+  Totast,
 } from "@/Hooks/Utils";
 import { UseSignMessage } from "@/Hooks/UseSignMessage.ts";
 import { useNavigate } from "react-router-dom";
@@ -36,7 +37,6 @@ const Home: FC = () => {
   const { signMessage } = UseSignMessage();
   const navigate = useNavigate();
   const address = storage.get("address");
-
   const [walletAddress, setWalletAddress] = useState<string>("");
   const [isShowHint, setIsShowHint] = useState<boolean>(true);
   // 授权登录
@@ -76,7 +76,6 @@ const Home: FC = () => {
       params: [address],
     });
     console.log("result--", result);
-
     setAlgoBalance(result.value);
     getUsdtAmount(result.value);
   };
@@ -87,10 +86,13 @@ const Home: FC = () => {
       methodsName: "getAmountsOut",
       params: [
         aiGoAmount,
-        [ContractList["AIgoToken"].address, ContractList["USDTToken"].address],
+        [
+          ContractList["AIgoToken"].address,
+          "0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c",
+        ],
       ],
     });
-    console.log("result---", result);
+    setUsdtBalance(result.value[1] || 0n);
   };
   const copyClick = (val) => {
     copyText(val);
@@ -112,9 +114,16 @@ const Home: FC = () => {
       },
     });
   };
-  useEffect(() => {
-    console.log("1----", address);
+  const btnClick = () => {
     if (address) {
+      navigate("/PlaceBet");
+    } else {
+      Totast("请先链接钱包", "info");
+    }
+  };
+  useEffect(() => {
+    const walletAddress = storage.get("address");
+    if (walletAddress) {
       setWalletAddress(address);
       initData(address);
     } else {
@@ -172,12 +181,12 @@ const Home: FC = () => {
             </span>
             <span className="tokenName">AIGO</span>
           </div>
-          <div className="rightIocn" onClick={() => initData()}>
+          <div className="rightIocn" onClick={() => initData(address)}>
             <img src={refresh} className="icon"></img>
           </div>
         </div>
         <div className="hintTxt">
-          ≈ {walletAddress ? fromWei(usdtBalance, getDecimals()) : "-"} USDT
+          ≈ {walletAddress ? fromWei(usdtBalance, getDecimals()) : "-"} BNB
         </div>
       </div>
 
@@ -187,7 +196,7 @@ const Home: FC = () => {
           <div className="txt">庄家收款地址</div>
         </div>
         <div className="hintTxts">
-          请将 ALGO 转账至以下地址完成下注。请仔细核对地址,转错将无法找回
+          请将 AIGO 转账至以下地址完成下注。请仔细核对地址,转错将无法找回
         </div>
         <div className="copyOption">
           <div className="leftTxt">
@@ -213,7 +222,7 @@ const Home: FC = () => {
         </div>
         <div className="rightOption">系统正常运行</div>
       </div>
-      <div className="btnBox">
+      <div className="btnBox" onClick={() => btnClick()}>
         <span className="spnTxt">开始下注</span>
         <img src={whiteDonate} className="rightIcon"></img>
       </div>
