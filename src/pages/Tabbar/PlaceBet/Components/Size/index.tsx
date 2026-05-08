@@ -72,6 +72,7 @@ const Size: FC = () => {
       } else {
         isApply = true;
       }
+      console.log("isApply==",isApply)
       if (!isApply) {
         return;
       }
