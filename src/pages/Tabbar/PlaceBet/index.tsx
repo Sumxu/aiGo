@@ -5,14 +5,11 @@ import { useNavigate } from "react-router-dom";
 import Size from "./Components/Size";
 import SingleOrDouble from "./Components/SingleOrDouble";
 import Cow from "./Components/Cow";
-import walletWhilte from "@/assets/donate/walletWhitle.png";
-import naoling from "@/assets/donate/naoling.png";
-import lianjie from "@/assets/donate/lianjie.png";
-import studio from "@/assets/donate/studio.png";
+import alarm from "@/assets/basic/alarm.png";
+import placeBetIcon from '@/assets/tabbar/placeBet.png'
 import ContractRequest from "@/Hooks/ContractRequest.ts";
 import { formatAddress, fromWei, getDecimals } from "@/Hooks/Utils";
 import { storage } from "@/Hooks/useLocalStorage";
-import whiteDonate from '@/assets/tabbar/whiteDonate.png'
 const PlaceBet: FC = () => {
   const navigate = useNavigate();
   const walletAddress = storage.get("address");
@@ -39,7 +36,7 @@ const PlaceBet: FC = () => {
         <div className="headerTopBox">
           <div className="leftOption">
             <div className="logoBox">
-              <img src={whiteDonate} className="icon"></img>
+              <img src={placeBetIcon} className="icon"></img>
             </div>
             <div className="hintTxt">
               <div className="txtTop">下注</div>
@@ -51,7 +48,12 @@ const PlaceBet: FC = () => {
               <div className="block"></div>
               <div className="blockTxt">链上同步中</div>
             </div>
-            <img src={naoling} className="icon"></img>
+            <div>
+              <div className="headerTopRightOption">
+                <img src={alarm} className="icon"></img>
+                <div className="redBlock"></div>
+              </div>
+            </div>
           </div>
         </div>
         <div className="walletBox">
@@ -63,7 +65,6 @@ const PlaceBet: FC = () => {
             </div>
           </div>
           <div className="rightWalletAddress">
-            <img className="icon" src={lianjie}></img>
             <div className="walletAddress">{formatAddress(walletAddress)}</div>
           </div>
         </div>

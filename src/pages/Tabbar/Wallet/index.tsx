@@ -8,6 +8,8 @@ import NetworkRequest from "@/Hooks/NetworkRequest.ts";
 import { storage } from "@/Hooks/useLocalStorage";
 import { useLocation } from "react-router-dom";
 import { useRef } from "react";
+import alarm from "@/assets/basic/alarm.png";
+import dot from "@/assets/basic/dot.png";
 import { Modal } from "antd";
 import {
   formatAddress,
@@ -20,13 +22,12 @@ import {
 import { UseSignMessage } from "@/Hooks/UseSignMessage.ts";
 import { useNavigate } from "react-router-dom";
 import naoling from "@/assets/donate/naoling.png";
-import walletWhilte from "@/assets/donate/walletWhitle.png";
-import whileCopy from "@/assets/donate/whileCopy.png";
-import blackCopy from "@/assets/donate/blackCopy.png";
-import whiteDonate from "@/assets/tabbar/whiteDonate.png";
+import whileCopy from "@/assets/basic/copyIcon.png";
+import walletWhilte from "@/assets/tabbar/walletCheck.png";
 import refresh from "@/assets/donate/refresh.png";
 import anquan from "@/assets/donate/anquan.png";
 import home from "@/assets/donate/home.png";
+import logoOut from "@/assets/basic/logoOut.png";
 import errorIcon from "@/assets/donate/errorIcon.png";
 import closeIcon from "@/assets/basic/close.png";
 import { ensureWalletConnected } from "@/Hooks/WalletHooks";
@@ -140,7 +141,8 @@ const Home: FC = () => {
           <div className="walletEn">Wallet & Connection</div>
         </div>
         <div className="headerTopRightOption">
-          <img src={naoling} className="icon"></img>
+          <img src={alarm} className="icon"></img>
+          <div className="redBlock"></div>
         </div>
       </div>
 
@@ -155,11 +157,13 @@ const Home: FC = () => {
             </div>
           </div>
           <div className="rightOption">
-            <div className="block"></div>
             {walletAddress ? (
-              <div className="rightTxt" onClick={disconnectWallet}>
-                退出
-              </div>
+              <>
+                <img src={logoOut} className="logoOutIcon"></img>
+                <div className="rightTxt" onClick={disconnectWallet}>
+                  退出
+                </div>
+              </>
             ) : (
               <div className="rightTxt" onClick={connectWallet}>
                 连接钱包
@@ -192,18 +196,14 @@ const Home: FC = () => {
 
       <div className="hintBox">
         <div className="headerTopOption">
-          <img src={home} className="icon"></img>
           <div className="txt">庄家收款地址</div>
-        </div>
-        <div className="hintTxts">
-          请将 AIGO 转账至以下地址完成下注。请仔细核对地址,转错将无法找回
         </div>
         <div className="copyOption">
           <div className="leftTxt">
             {formatAddress(ContractList["AigoPrediction"].address)}
           </div>
           <img
-            src={blackCopy}
+            src={whileCopy}
             onClick={() => copyClick(ContractList["AigoPrediction"].address)}
             className="copyIcon"
           ></img>
@@ -215,16 +215,13 @@ const Home: FC = () => {
       </div>
       <div className="openBox">
         <div className="leftOption">
-          <div className="status-dot">
-            <span className="dot"></span>
-          </div>
+          <img className="status-dot" src={dot}></img>
           <div className="txtBox">下注已开启</div>
         </div>
         <div className="rightOption">系统正常运行</div>
       </div>
       <div className="btnBox" onClick={() => btnClick()}>
         <span className="spnTxt">开始下注</span>
-        <img src={whiteDonate} className="rightIcon"></img>
       </div>
       {isShowHint && (
         <div className="hintEndBox">

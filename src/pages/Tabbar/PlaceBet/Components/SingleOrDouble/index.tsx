@@ -4,9 +4,11 @@ import { useState, useEffect } from "react";
 import { Button } from "antd";
 import { useNavigate } from "react-router-dom";
 import ContractList from "@/Contract/Contract";
+import dice from "@/assets/donate/dice.png";
 import studio from "@/assets/donate/studio.png";
+import rightJianTo from "@/assets/basic/rightJianTo.png";
 import blackRight from "@/assets/donate/blackRight.png";
-import shangzhang from "@/assets/donate/shangzhang.png";
+import shangzhang from "@/assets/basic/shangzhang.png";
 import anquanWhilte from "@/assets/donate/anquanWhilte.png";
 import ContractSend from "@/Hooks/ContractSend";
 import ContractRequest from "@/Hooks/ContractRequest.ts";
@@ -50,10 +52,7 @@ const SingleOrDouble: FC = () => {
           await ContractSend({
             tokenName: "AIgoToken",
             methodsName: "approve",
-            params: [
-              ContractList["AigoPrediction"].address,
-              amount, 
-            ],
+            params: [ContractList["AigoPrediction"].address, amount],
           }).then((res) => {
             if (res.value) {
               isApply = true;
@@ -103,9 +102,7 @@ const SingleOrDouble: FC = () => {
     <div className="SingleOrDoublePage">
       <div className="hintBox">
         <div className="headerTopOption">
-          <div className="blockOption">
-            <img className="icon" src={studio}></img>
-          </div>
+          <img className="icon" src={dice}></img>
           <div className="hintTxt">玩法规则 · 尾数</div>
         </div>
         <div className="hintContent">
@@ -113,9 +110,10 @@ const SingleOrDouble: FC = () => {
           <div className="btnOption">
             <div className="btnFlex btnRight12">
               <span className="spn1">后两位</span>
-              <span className="spn2">数字+字母</span>
-              <img src={blackRight} className="icon"></img>
-              <span className="spn3">中</span>
+              <span className="spn2">(数字+字母)或(字母+数字)</span>
+              <span className="spn3">
+                <img src={rightJianTo} className="rightIcon"></img>中
+              </span>
             </div>
           </div>
         </div>
@@ -163,12 +161,14 @@ const SingleOrDouble: FC = () => {
             <div className="leftTxt">合计支付</div>
             <div className="leftTxt">{selected} AIGO</div>
           </div>
+        </div>
+
+        <div className="btnBox">
           <Button
             className="btn"
             loading={btnLoading}
             onClick={() => submitClick()}
           >
-            <img src={anquanWhilte} className="icon"></img>
             <div className="txt">确认下注</div>
           </Button>
         </div>

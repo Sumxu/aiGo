@@ -2,9 +2,9 @@ import "./index.scss";
 import type { FC } from "react";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import studio from "@/assets/donate/studio.png";
+import dice from "@/assets/donate/dice.png";
 import blackRight from "@/assets/donate/blackRight.png";
-import shangzhang from "@/assets/donate/shangzhang.png";
+import shangzhang from "@/assets/basic/shangzhang.png";
 import checkIcon from "@/assets/donate/checkIcon.png";
 import noCheck from "@/assets/donate/noCheck.png";
 import anquanWhilte from "@/assets/donate/anquanWhilte.png";
@@ -103,7 +103,7 @@ const Cow: FC = () => {
       <div className="hintBox">
         <div className="headerTopOption">
           <div className="blockOption">
-            <img className="icon" src={studio}></img>
+            <img className="icon" src={dice}></img>
           </div>
           <div className="hintTxt">玩法规则 · 牛牛</div>
         </div>
@@ -181,12 +181,13 @@ const Cow: FC = () => {
             <div className="leftTxt">合计支付</div>
             <div className="leftTxt">{computedAmount()} AIGO</div>
           </div>
+        </div>
+        <div className="btnBox">
           <Button
             className="btn"
             loading={btnLoading}
             onClick={() => submitClick()}
           >
-            <img src={anquanWhilte} className="icon"></img>
             <div className="txt">确认下注</div>
           </Button>
         </div>

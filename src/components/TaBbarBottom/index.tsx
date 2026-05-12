@@ -4,11 +4,11 @@ import "./index.scss";
 import { TabBar } from "antd-mobile";
 import { t } from "i18next";
 import wallet from "@/assets/tabbar/wallet.png";
-import history from "@/assets/tabbar/history.png";
-import historyActive from "@/assets/tabbar/historyActive.png";
-import walletActive from "@/assets/tabbar/walletActive.png";
-import donate from "@/assets/tabbar/donate.png";
-import donateActive from "@/assets/tabbar/donateActive.png";
+import list from "@/assets/tabbar/list.png";
+import listCheck from "@/assets/tabbar/listCheck.png";
+import walletCheck from "@/assets/tabbar/walletCheck.png";
+import placeBet from "@/assets/tabbar/placeBet.png";
+import placeBetCheck from "@/assets/tabbar/placeBetCheck.png";
 import { useNavigate, useLocation } from "react-router-dom";
 import { storage } from "@/Hooks/useLocalStorage";
 import { Totast } from "@/Hooks/Utils";
@@ -31,20 +31,20 @@ const TaBbarBottom: FC = () => {
       key: "/Wallet",
       keys: "/Wallet/",
       title: t("钱包"),
-      icon: { default: wallet, active: walletActive },
+      icon: { default: wallet, active: walletCheck },
       // icon: { default: home, active: homeActive },
     },
     {
       key: "/PlaceBet",
       keys: "/PlaceBet/",
       title: "下注",
-      icon: { default: donate, active: donateActive },
+      icon: { default: placeBet, active: placeBetCheck },
     },
     {
       key: "/History",
       keys: "/History/",
       title: "记录",
-      icon: { default: history, active: historyActive },
+      icon: { default: list, active: listCheck },
     },
   ];
   return (
@@ -62,8 +62,8 @@ const TaBbarBottom: FC = () => {
               style={{
                 color:
                   pathname === item.key || pathname === item.keys
-                    ? "#000"
-                    : "#737373",
+                    ? "#FFFFFF"
+                    : "#676B8F",
               }}
             >
               {item.title}

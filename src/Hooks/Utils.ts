@@ -17,6 +17,10 @@ export function getLastChars(str, n) {
   if (!str) return "";
   return str.slice(-n);
 }
+export function getLastNumber(str) {
+  const match = str.match(/\d(?=\D*$)/);
+  return match ? match[0] : "";
+}
 export function getRange(str, start, end) {
   if (!str) return "";
   return str.slice(start, end);

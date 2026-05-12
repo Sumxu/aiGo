@@ -46,19 +46,17 @@ async function useContractSend({
     // ✅ 放大 30%
     const gasLimit = (estimatedGas * 130n) / 100n;
     const gasPrice = feeData.gasPrice;
+    console.log("gasPrice--",gasPrice)
     const maxFeePerGas = ethers.parseUnits("0.1", "gwei");
     const maxPriorityFeePerGas = ethers.parseUnits("0.06", "gwei");
     const tx = await contract[methodsName](...params, {
       value,
       gasLimit,
-      gasPrice,
-      maxFeePerGas: feeData.maxFeePerGas ?? maxFeePerGas,
+      maxFeePerGas: feeData.maxFeePerGas?feeData.maxFeePerGas:maxFeePerGas,
       maxPriorityFeePerGas:
-        feeData.maxPriorityFeePerGas ?? maxPriorityFeePerGas,
+        feeData.maxPriorityFeePerGas ?feeData.maxPriorityFeePerGas: maxPriorityFeePerGas,
     });
-
     const receipt = await tx.wait();
-
     return { value: receipt };
   } catch (err: any) {
     if (

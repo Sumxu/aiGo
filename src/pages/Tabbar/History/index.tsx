@@ -12,10 +12,10 @@ import {
   copyText,
   getRange,
   Totast,
-  toWei,
+  toWei,getLastNumber
 } from "@/Hooks/Utils";
 import { Button, Spin } from "antd";
-import refreshBlack from "@/assets/donate/refreshBlack.png";
+import refreshBlack from "@/assets/basic/Vector.png";
 import ContractSend from "@/Hooks/ContractSend";
 import ContractRequest from "@/Hooks/ContractRequest";
 import { Dropdown, Radio, Space, InfiniteScroll, Toast } from "antd-mobile";
@@ -39,7 +39,6 @@ interface listItem {
 }
 const History: React.FC = () => {
   const walletAddress = storage.get("address");
-
   const navigate = useNavigate();
   const [isMore, setIsMore] = useState<boolean>(false);
   const [listLoading, setListLoading] = useState<boolean>(false);
@@ -449,7 +448,7 @@ const History: React.FC = () => {
                     <div className="labelTxt">未位值:</div>
                     {item.predictionContestType == 1 && (
                       <div className="spn1">
-                        {item.blockHash ? getLastChars(item.blockHash, 1) : "-"}
+                        {item.blockHash ? getLastNumber(item.blockHash, 1) : "-"}
                       </div>
                     )}
                     {item.predictionContestType == 2 && (

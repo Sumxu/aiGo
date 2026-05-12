@@ -1,51 +1,65 @@
 .homePageBox {
-  background: #fff;
-  padding: 24px 24px 80px 24px;
+  background: #000;
+  padding: 24px 12px 80px 12px;
 
   .headerTopBox {
     position: fixed;
     top: 0;
     left: 0;
     right: 0;
-    background: #fff;
-    padding: 24px;
+    background: #000;
     display: flex;
     align-items: center;
     justify-content: space-between;
+    padding: 12px 22px;
+
     .headerTopLeftOption {
       .walletTxt {
         font-size: 24px;
         font-weight: bold;
+        color: #fff;
       }
+
       .walletEn {
         margin-top: 4px;
-        color: #737373;
+        font-size: 12px;
+        color: #AEAEAE;
       }
     }
 
     .headerTopRightOption {
       border-radius: 50%;
-      width: 38px;
-      height: 38px;
+      width: 32px;
+      height: 32px;
       border: 1px solid #e5e5e5;
       display: flex;
       align-items: center;
       justify-content: center;
+      position: relative;
+
+      .redBlock {
+        position: absolute;
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: #D94231;
+        top:6px;
+        right: 6px;
+      }
 
       .icon {
         border-radius: 50%;
         width: 18px;
         height: 18px;
- 
       }
     }
   }
 
   .loginWalletBox {
-    margin-top: 80px;
-    background: #000;
+    margin-top: 60px;
     border-radius: 16px;
-    padding: 24px;
+    padding: 24px 14px;
+    background: linear-gradient(243.66deg, #37257B 1.55%, #1E2047 33.69%, #1E2047 53.85%, #203C80 90.99%);
 
     .loginHeaderTopBox {
       display: flex;
@@ -64,7 +78,8 @@
           display: flex;
           align-items: center;
           justify-content: center;
-          background: #343434;
+          background: #636885;
+          border: 1px solid #fff;
 
           .walletIcon {
             width: 14px;
@@ -76,27 +91,35 @@
         .spnTxt {
           margin-left: 12px;
           color: #bdbdbd;
+          color: #8D90B3;
           font-size: 14px;
         }
       }
 
       .rightOption {
-        background: #1e3d2f;
-        border-radius: 16px;
+        border-radius: 14px;
         padding: 6px 12px;
         display: flex;
         align-items: center;
+        background: rgb(58, 74, 122);
 
         .block {
           width: 8px;
           height: 8px;
           border-radius: 50%;
-          background: #60d197;
+        }
+
+        .logoOutIcon {
+          width: 10px;
+          height: 12px;
         }
 
         .rightTxt {
-          margin-left: 12px;
-          color: #84e3b5;
+          font-weight: bold;
+          margin-left: 4px;
+          font-size: 12px;
+          color: rgba(255, 255, 255, 1);
+
         }
       }
     }
@@ -119,59 +142,52 @@
 
         .tokenName {
           margin-left: 12px;
-          color: #bdbdbd;
+          color: #8D90B3;
           font-size: 12px;
         }
       }
 
       .rightIocn {
         .icon {
-          width: 16px;
-          height: 16px;
+          margin-top: 12px;
+          width: 14px;
+          height: 14px;
         }
       }
     }
 
     .title {
-      color: #bdbdbd;
+      margin-top: 12px;
+      color: #8D90B3;
     }
 
     .optionBoxBg {
       margin-top: 14px;
       padding: 10px 8px;
-      background: #262626;
+      background: rgba(58, 74, 122, 1);
     }
 
     .hintTxt {
       margin-top: 6px;
-      font-size: 14px;
-      color: #bdbdbd;
+      font-size: 12px;
+      color: #8D90B3;
     }
   }
 
   .hintBox {
     margin-top: 12px;
-    background: #fff;
-    border-radius: 16px;
-    box-shadow:
-      0 1px 1px rgba(0, 0, 0, 0.04),
-      0 1px 1px rgba(0, 0, 0, 0.03);
-    padding: 24px;
-    border: 1px solid rgba(0, 0, 0, 0.06);
+    background: linear-gradient(261.82deg, #192041 3.88%, #1B1E47 96.12%);
+    border-radius: 12px;
+    padding: 24px 14px;
 
     .headerTopOption {
       display: flex;
       align-items: center;
 
-      .icon {
-        width: 12px;
-        height: 12px;
-      }
-
       .txt {
-        margin-left: 4px;
-        color: #000;
-        font-weight: bold;
+        font-weight: 500;
+        color: #F0FBFF;
+        font-size: 17px;
       }
     }
 
@@ -182,16 +198,16 @@
     }
 
     .copyOption {
+      margin-top: 8px;
       display: flex;
       align-items: center;
       border-radius: 6px;
-      background: #f5f5f5;
+      background: #2B2D4D;
       justify-content: space-between;
       padding: 10px 8px;
-      margin-top: 6px;
 
       .leftTxt {
-        color: #000;
+        color: #fff;
       }
 
       .copyIcon {
@@ -203,27 +219,25 @@
     .safeOption {
       display: flex;
       align-items: center;
+      margin-top: 12px;
 
       .safeIcon {
-        width: 12px;
-        height: 12px;
+        width: 9px;
+        height: 11px;
       }
 
       .spnTxt {
         margin-left: 4px;
-        color: #bdbdbd;
+        color: #A9A9A9;
       }
     }
   }
 
   .openBox {
     margin-top: 12px;
-    background: #effdf5;
+    background: #162627;
     border-radius: 6px;
     padding: 10px 14px;
-    box-shadow:
-      0 1px 1px rgba(0, 0, 0, 0.04),
-      0 1px 1px rgba(0, 0, 0, 0.03);
     // display: flex;
     // align-items: center;
     // justify-content: space-between;
@@ -287,49 +301,41 @@
 
       .txtBox {
         margin-left: 12px;
-        background: #54ba81;
+        background: #426b6f;
         color: #fff;
         font-size: 12px;
         padding: 4px 6px;
-        border-radius: 8px;
+        border-radius: 6px;
       }
     }
 
     .rightOption {
-      margin-top: 4px;
-      color: #737373;
+      margin-top: 10px;
+      color: rgba(169, 169, 169, 1);
     }
   }
 
   .btnBox {
-    margin-top: 12px;
+    margin-top: 62px;
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: 6px;
-    background: #000;
+    border-radius: 8px;
+    background: #4DEAF1;
     padding: 10px 0px;
 
     .spnTxt {
-      color: #fff;
-      font-size: 15px;
-    }
-
-    .rightIcon {
-      margin-left: 12px;
-      width: 15px;
-      height: 15px;
+      color: #000;
+      font-weight: 700;
+      font-size: 14px;
     }
   }
 
   .hintEndBox {
-    margin-top: 12px;
-    background: #fefbed;
-    border-radius: 6px;
-    box-shadow:
-      0 1px 1px rgba(0, 0, 0, 0.04),
-      0 1px 1px rgba(0, 0, 0, 0.03);
-    padding:10px 24px;
+    margin-top: 6px;
+    border-radius: 8px;
+    padding: 10px 14px;
+    background: #201e15;
 
     .headerTopOption {
       display: flex;
@@ -339,6 +345,7 @@
       .leftOption {
         display: flex;
         align-items: center;
+
         .icon {
           width: 14px;
           height: 14px;
@@ -346,8 +353,8 @@
 
         .hintTxt {
           margin-left: 8px;
-          color: #723716;
-          font-size: 14px;
+          color: rgba(112, 86, 73, 1);
+          font-size: 12px;
         }
       }
 
@@ -359,7 +366,8 @@
 
     .endTxt {
       margin-top: 4px;
-      color: #ad531f;
+      font-size: 12px;
+      color: rgba(124, 84, 63, 1);
       margin-left: 24px;
     }
   }

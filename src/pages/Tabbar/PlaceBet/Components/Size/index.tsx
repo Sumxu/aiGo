@@ -4,15 +4,16 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import studio from "@/assets/donate/studio.png";
 import blackRight from "@/assets/donate/blackRight.png";
-import shangzhang from "@/assets/donate/shangzhang.png";
-import checkIcon from "@/assets/donate/checkIcon.png";
-import noCheck from "@/assets/donate/noCheck.png";
+import shangzhang from "@/assets/basic/shangzhang.png";
+import checkBtn from "@/assets/basic/checkBtn.png";
 import anquanWhilte from "@/assets/donate/anquanWhilte.png";
 import { Button } from "antd";
 import ContractSend from "@/Hooks/ContractSend";
 import ContractRequest from "@/Hooks/ContractRequest.ts";
 import ContractList from "@/Contract/Contract";
 import { storage } from "@/Hooks/useLocalStorage";
+import dice from "@/assets/donate/dice.png";
+import rightJianTo from "@/assets/basic/rightJianTo.png";
 import { fromWei, getDecimals, toWei, Totast } from "@/Hooks/Utils";
 const Size: FC = () => {
   const [algoBalance, setAlgoBalance] = useState<bigint>(0n);
@@ -29,7 +30,7 @@ const Size: FC = () => {
     try {
       let amount = toWei(selected.toString(), getDecimals());
       if (algoBalance < amount) {
-        Totast('余额不足','error')
+        Totast("余额不足", "error");
         setBtnLoading(false);
         return;
       }
@@ -72,7 +73,7 @@ const Size: FC = () => {
       } else {
         isApply = true;
       }
-      console.log("isApply==",isApply)
+      console.log("isApply==", isApply);
       if (!isApply) {
         return;
       }
@@ -108,26 +109,24 @@ const Size: FC = () => {
     <div className="SizePage">
       <div className="hintBox">
         <div className="headerTopOption">
-          <div className="blockOption">
-            <img className="icon" src={studio}></img>
-          </div>
+          <img className="icon" src={dice}></img>
           <div className="hintTxt">玩法规则 · 单双</div>
         </div>
         <div className="hintContent">
-          <div className="txt">
-            取交易哈希txHash的最后一位十六进制字符判定结果:
-          </div>
+          <div className="txt">取交易哈希txHash的最后一位数字判定结果:</div>
           <div className="btnOption">
             <div className="btnFlex btnRight12">
               <span className="spn1">末位值/2==1</span>
-              <img className="icon" src={blackRight}></img>
-              <span className="spn3">单</span>
+              <div className="spn3">
+                <img src={rightJianTo} className="rightIcon"></img>单
+              </div>
             </div>
 
             <div className="btnFlex">
               <span className="spn1">末位值/2!=1</span>
-              <img className="icon" src={blackRight}></img>
-              <span className="spn3">双</span>
+              <div className="spn3">
+                <img src={rightJianTo} className="rightIcon"></img>双
+              </div>
             </div>
           </div>
         </div>
@@ -144,11 +143,7 @@ const Size: FC = () => {
               <div className="headerTop">
                 <div className="btnTop">单</div>
                 <div className="checkOption">
-                  {betType == 2 ? (
-                    <img src={noCheck} className="icon"></img>
-                  ) : (
-                    <img src={checkIcon} className="checkIcon"></img>
-                  )}
+                  {betType == 1 && <img src={checkBtn} className="icon"></img>}
                 </div>
               </div>
             </div>
@@ -159,11 +154,7 @@ const Size: FC = () => {
               <div className="headerTop">
                 <div className="btnTop">双</div>
                 <div className="checkOption">
-                  {betType == 1 ? (
-                    <img src={noCheck} className="icon"></img>
-                  ) : (
-                    <img src={checkIcon} className="checkIcon"></img>
-                  )}
+                  {betType == 2 && <img src={checkBtn} className="icon"></img>}
                 </div>
               </div>
             </div>
@@ -200,7 +191,7 @@ const Size: FC = () => {
             <div className="optionTxt">
               <div className="leftTxt">玩法</div>
               <div className="rightTxt">
-                单双 · {betType == 0 ? "单" : "双"}
+                单双 · {betType == 1 ? "单" : "双"}
               </div>
             </div>
             <div className="optionTxt">
@@ -212,12 +203,14 @@ const Size: FC = () => {
             <div className="leftTxt">合计支付</div>
             <div className="leftTxt">{selected} AIGO</div>
           </div>
+        </div>
+
+        <div className="btnBox">
           <Button
             className="btn"
             loading={btnLoading}
             onClick={() => submitClick()}
           >
-            <img src={anquanWhilte} className="icon"></img>
             <div className="txt">确认下注</div>
           </Button>
         </div>
